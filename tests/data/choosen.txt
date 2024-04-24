@@ -1,0 +1,1 @@
+{"Poniedzia\u0142ek": {"name": "qwer", "image_path": "watches/qwer.png"}, "Wtorek": {"name": "rty", "image_path": "watches/rty.png"}, "\u015aroda": {"name": "chuj", "image_path": "watches/chuj.png"}, "Czwartek": {"name": "dupa", "image_path": "watches/dupa.png"}, "Pi\u0105tek": {"name": "zegarek3", "image_path": "watches/zegarek3.png"}}
