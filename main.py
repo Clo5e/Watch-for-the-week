@@ -94,14 +94,19 @@ class WatchApp:
 
     def load_week_watches(self):
         choosen_files = os.listdir(self.choosen_dir)
-        choosen_files.sort(key=lambda x: datetime.strptime(x.split('-')[1].replace('.txt', ''), '%Y%m%d%H%M%S'))
-        last_choosen_file = choosen_files[-1] if choosen_files else None
+        # Filtruj pliki, które mają poprawny format: 'choosen_watches-YYYYMMDDHHMMSS.txt'
+        filtered_files = [f for f in choosen_files if '-' in f and f.endswith('.txt') and len(f.split('-')) > 1]
+        # Sortuj pliki po dacie
+        filtered_files.sort(key=lambda x: datetime.strptime(x.split('-')[1].replace('.txt', ''), '%Y%m%d%H%M%S'))
+
+        last_choosen_file = filtered_files[-1] if filtered_files else None
         if last_choosen_file:
             try:
                 with open(os.path.join(self.choosen_dir, last_choosen_file), 'r') as f:
                     self.week_watches = json.load(f)
             except json.JSONDecodeError:
                 print(f"Błąd podczas odczytywania pliku {last_choosen_file}. Plik może być pusty lub zawierać niepoprawne dane.")
+
 
 
     def end_of_day_survey(self):
@@ -161,8 +166,12 @@ class WatchAppGUI:
     def update_buttons(self):
         current_day = datetime.today().weekday()  # 0 is Monday, 6 is Sunday
         choosen_files = os.listdir(self.app.choosen_dir)
-        choosen_files.sort(key=lambda x: datetime.strptime(x.split('-')[1].replace('.txt', ''), '%Y%m%d%H%M%S'))
-        last_choosen_file = choosen_files[-1] if choosen_files else None
+        # Filtruj pliki, które mają poprawny format: 'choosen_watches-YYYYMMDDHHMMSS.txt'
+        filtered_files = [f for f in choosen_files if '-' in f and f.endswith('.txt') and len(f.split('-')) > 1]
+        # Sortuj pliki po dacie
+        filtered_files.sort(key=lambda x: datetime.strptime(x.split('-')[1].replace('.txt', ''), '%Y%m%d%H%M%S'))
+
+        last_choosen_file = filtered_files[-1] if filtered_files else None
         last_choosen_date = datetime.strptime(last_choosen_file.split('-')[1].replace('.txt', ''), '%Y%m%d%H%M%S') if last_choosen_file else None
         if last_choosen_date and last_choosen_date.isocalendar()[1] == datetime.now().isocalendar()[1]:
             # If there is a choosen file for this week
@@ -175,6 +184,7 @@ class WatchAppGUI:
             self.select_watches_for_week_button['state'] = 'normal'
 
         self.root.after(1000, self.update_buttons)  # Check again in 1 second
+
 
     def remove_watch(self):
         self.select_watch()
